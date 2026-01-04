@@ -1,30 +1,24 @@
 {
-  "id": "/art-engine-generator/",
   "name": "Art Engine Generator",
   "short_name": "ArtEngine",
-  "start_url": "./index.html",
+  "description": "Generador de ideas para artistas por Evil Cuy Studios",
+  "start_url": "./",
   "display": "standalone",
+  "background_color": "#1a1a2e",
+  "theme_color": "#6c5ce7",
   "orientation": "portrait",
-  "background_color": "#0a0a0a",
-  "theme_color": "#bb86fc",
   "icons": [
     {
-      "src": "icon.png",
-      "sizes": "1080x1080",
+      "src": "/art-engine-generator/icon-192.png",
+      "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any"
-    }
-  ],
-  "screenshots": [
+      "purpose": "any maskable"
+    },
     {
-      "src": "icon.png",
-      "sizes": "1080x1080",
+      "src": "/art-engine-generator/icon-512.png",
+      "sizes": "512x512",
       "type": "image/png",
-      "form_factor": "narrow",
-      "label": "Móvil"
+      "purpose": "any maskable"
     }
   ]
 }
-  ]
-}
-
