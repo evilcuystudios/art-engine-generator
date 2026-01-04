@@ -1,4 +1,4 @@
-const cacheName = 'art-engine-v3';
+const cacheName = 'art-engine-v4';
 const assets = [
   './',
   './index.html',
@@ -22,4 +22,5 @@ self.addEventListener('fetch', e => {
   );
 
 });
+
 
