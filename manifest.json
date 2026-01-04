@@ -2,7 +2,7 @@
   "name": "Art Engine Generator",
   "short_name": "ArtEngine",
   "description": "Generador de ideas para artistas",
-  "start_url": "index.html",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0a0a0a",
   "theme_color": "#bb86fc",
@@ -15,3 +15,4 @@
     }
   ]
 }
+
