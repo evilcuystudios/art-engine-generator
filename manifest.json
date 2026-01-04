@@ -2,7 +2,6 @@
   "id": "/art-engine-generator/",
   "name": "Art Engine Generator",
   "short_name": "ArtEngine",
-  "description": "Generador de ideas para artistas por Evil Cuy Studios",
   "start_url": "./index.html",
   "display": "standalone",
   "orientation": "portrait",
@@ -21,15 +20,11 @@
       "src": "icon.png",
       "sizes": "1080x1080",
       "type": "image/png",
-      "form_factor": "wide",
-      "label": "Escritorio Art Engine"
-    },
-    {
-      "src": "icon.png",
-      "sizes": "1080x1080",
-      "type": "image/png",
       "form_factor": "narrow",
-      "label": "Móvil Art Engine"
+      "label": "Móvil"
     }
   ]
 }
+  ]
+}
+
