@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ART ENGINE GENERATOR | 🐹 v1.0</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#bb86fc">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="apple-touch-icon" href="icon.png">
+
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0a0a; --surface: #121212; --accent: #bb86fc;
+            --cyan: #03dac6; --text: #e1e1e1; --border: #262626;
+            --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --success: #4ade80; --warning: #fbbf24;
+        }
+        .light-mode {
+            --bg: #f5f5f5; --surface: #ffffff; --accent: #6366f1;
+            --cyan: #06b6d4; --text: #1a1a1a; --border: #e5e5e5;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; }
+        body { 
+            background: var(--bg); color: var(--text); padding-bottom: 80px; 
+            overflow-x: hidden; transition: background 0.3s, color 0.3s;
+        }
+        header { 
+            padding: 20px; border-bottom: 1px solid var(--border); 
+            display: flex; justify-content: space-between; align-items: center;
+            backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 100;
+            background: rgba(10,10,10,0.9);
+        }
+        .light-mode header { background: rgba(255,255,255,0.9); }
+        .logo { 
+            font-family: 'JetBrains Mono'; background: var(--gradient);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            font-size: 1.1rem; font-weight: bold; letter-spacing: -1px;
+        }
+        .header-actions { display: flex; gap: 12px; align-items: center; }
+        .icon-btn {
+            background: var(--surface); border: 1px solid var(--border);
+            width: 38px; height: 38px; border-radius: 10px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem; transition: 0.2s; position: relative;
+        }
+        .badge {
+            position: absolute; top: -5px; right: -5px; background: var(--accent);
+            color: #000; border-radius: 10px; padding: 2px 6px;
+            font-size: 0.65rem; font-weight: bold; font-family: 'JetBrains Mono';
+        }
+        .container { padding: 20px; max-width: 600px; margin: 0 auto; }
+        .menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 25px; }
+        .card-btn {
+            background: var(--surface); border: 1px solid var(--border); color: var(--text);
+            padding: 22px 10px; border-radius: 16px; font-size: 0.85rem; font-weight: 600;
+            cursor: pointer; transition: all 0.3s; text-transform: uppercase; position: relative;
+        }
+        .card-btn.active { border-color: var(--accent); background: #1a1520; transform: translateY(-3px); }
+        #display { display: none; animation: slideUp 0.5s ease; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .prompt-box {
+            background: var(--surface); border-radius: 24px; padding: 30px; 
+            border: 1px solid var(--border); margin-bottom: 20px; position: relative;
+        }
+        .tag { 
+            font-family: 'JetBrains Mono'; font-size: 0.65rem; 
+            color: var(--cyan); background: rgba(3,218,198,0.15); 
+            padding: 6px 12px; border-radius: 6px; margin-bottom: 15px; display: inline-block;
+        }
+        .palette { display: flex; gap: 8px; margin: 20px 0; }
+        .swatch { height: 45px; flex: 1; border-radius: 8px; cursor: pointer; transition: 0.2s; }
+        .btn-main { 
+            width: 100%; background: var(--gradient); color: #fff; 
+            border: none; padding: 20px; border-radius: 16px; 
+            font-weight: 700; cursor: pointer; margin-bottom: 12px;
+        }
+        .btn-sec { 
+            width: 100%; background: var(--surface); color: var(--text); 
+            border: 1px solid var(--border); padding: 16px; border-radius: 14px; 
+            cursor: pointer; margin-bottom: 10px; font-size: 0.85rem;
+        }
+        .ai-section {
+            background: rgba(187,134,252,0.05); border-radius: 20px; padding: 20px; margin-bottom: 20px;
+            border: 1px solid rgba(187,134,252,0.2);
+        }
+        .ai-title { font-family: 'JetBrains Mono'; font-size: 0.75rem; color: var(--accent); margin-bottom: 10px; }
+        nav { 
+            position: fixed; bottom: 0; width: 100%; 
+            background: rgba(10,10,10,0.98); display: flex; 
+            padding: 12px 0; border-top: 1px solid var(--border); z-index: 999;
+        }
+        .nav-item { flex: 1; text-align: center; color: #555; text-decoration: none; font-size: 0.7rem; }
+        .nav-item.active { color: var(--cyan); }
+        #view-journal, #view-stats { display: none; padding: 20px; }
+        .stat-card { background: var(--surface); border-radius: 20px; padding: 20px; margin-bottom: 15px; border: 1px solid var(--border); }
+        .stat-number { font-size: 2.5rem; font-weight: 700; color: var(--accent); font-family: 'JetBrains Mono'; }
+        .fav-btn {
+            position: absolute; top: 20px; right: 20px;
+            width: 40px; height: 40px; border-radius: 50%;
+            background: rgba(0,0,0,0.3); border: none; font-size: 1.2rem; cursor: pointer;
+        }
+        .toast {
+            position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%);
+            background: var(--accent); color: #000; padding: 10px 20px;
+            border-radius: 50px; font-weight: bold; font-size: 0.8rem; z-index: 2000;
+            display: none; animation: fadeIn 0.3s;
+        }
+        .journal-input-card { background: var(--surface); border: 1px dashed var(--accent); border-radius: 20px; padding: 20px; margin-bottom: 20px; }
+        .journal-input { width: 100%; background: #000; border: 1px solid var(--border); color: #fff; padding: 10px; border-radius: 8px; margin-bottom: 10px; }
+        .log-entry { background: var(--surface); border-radius: 16px; padding: 15px; margin-bottom: 15px; border: 1px solid var(--border); }
+        .log-img { width: 100%; border-radius: 12px; margin-top: 10px; border: 1px solid #333; }
+        .log-date { font-family: 'JetBrains Mono'; font-size: 0.65rem; color: var(--cyan); }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">ART ENGINE GENERATOR ∞ 🐹 </div>
+        <div class="header-actions">
+            <button class="icon-btn" onclick="core.toggleTheme()">
+                <span id="theme-icon">🌙</span>
+            </button>
+            <button class="icon-btn" onclick="core.switchTab('stats', document.querySelector('[onclick*=\'stats\']'))">
+                📊 <span class="badge" id="total-badge">0</span>
+            </button>
+        </div>
+    </header>
+
+    <div id="view-home" class="container">
+        <div class="menu-grid">
+            <button class="card-btn" onclick="core.init('Retratos', this)"><span>🎭 Retratos</span></button>
+            <button class="card-btn" onclick="core.init('Personajes', this)"><span>⚔️ Personajes</span></button>
+            <button class="card-btn" onclick="core.init('Anatomia', this)"><span>💪 Anatomía</span></button>
+            <button class="card-btn" onclick="core.init('Fondos', this)"><span>🏛️ Fondos</span></button>
+            <button class="card-btn" onclick="core.init('Manga', this)"><span>📖 Manga</span></button>
+            <button class="card-btn" onclick="core.generate()"><span>🎲 Re-Roll</span></button>
+        </div>
+
+        <div id="display">
+            <div class="prompt-box">
+                <button class="fav-btn" onclick="core.toggleFav()" id="fav-btn">🤍</button>
+                <span class="tag" id="label-cat">PROMPT</span>
+                <p id="text-main" style="font-size: 1.1rem; margin-bottom: 15px;"></p>
+                <p id="text-color" style="font-size: 0.8rem; color: #888;"></p>
+                <div class="palette" id="palette"></div>
+            </div>
+
+            <div class="ai-section">
+                <div class="ai-title">🤖 SUGERENCIA INTELIGENTE</div>
+                <div id="ai-response" style="font-size: 0.85rem; line-height: 1.5;">Genera un prompt para recibir consejos...</div>
+            </div>
+
+            <button class="btn-main" onclick="core.generate()">✨ NUEVA COMBINACIÓN</button>
+            <button class="btn-sec" onclick="core.getAISuggestion()">🤖 CONSEJO IA</button>
+            <button class="btn-sec" onclick="core.pin()">📌 PINTEREST</button>
+            <button class="btn-sec" onclick="core.sharePrompt()">📤 COPIAR / COMPARTIR</button>
+        </div>
+    </div>
+
+    <div id="view-journal" class="container">
+        <h2 style="font-family:'JetBrains Mono'; margin-bottom:20px; font-size: 1rem; color: var(--accent);">📚 LOG_DE_SESIONES</h2>
+        <div class="journal-input-card">
+            <input type="text" id="log-title" class="journal-input" placeholder="Título del dibujo...">
+            <input type="file" id="log-file" accept="image/*" style="display:none" onchange="core.saveLog()">
+            <button class="btn-main" style="padding:10px; font-size:0.8rem" onclick="document.getElementById('log-file').click()">📸 SUBIR MI DIBUJO</button>
+        </div>
+        <div id="journal-content"></div>
+    </div>
+
+    <div id="view-stats" class="container">
+        <h2 style="font-family:'JetBrains Mono'; margin-bottom:20px; font-size: 1rem; color: var(--accent);">📈 ESTADÍSTICAS</h2>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <div class="stat-card">
+                <div class="stat-number" id="stat-prompts">0</div>
+                <div style="font-size: 0.7rem; color: #888;">PROMPTS</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="stat-favs">0</div>
+                <div style="font-size: 0.7rem; color: #888;">FAVORITOS</div>
+            </div>
+        </div>
+        <h3 style="font-family:'JetBrains Mono'; margin: 20px 0 10px; font-size: 0.9rem; color: var(--cyan);">⭐ MIS FAVORITOS</h3>
+        <div id="favs-list"></div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <nav>
+        <a href="#" class="nav-item active" onclick="core.switchTab('home', this)"><span>⚡</span><br>GEN</a>
+        <a href="#" class="nav-item" onclick="core.switchTab('journal', this)"><span>📔</span><br>LOG</a>
+        <a href="#" class="nav-item" onclick="core.switchTab('stats', this)"><span>📊</span><br>STATS</a>
+    </nav>
+
+    <script>
+        const core = {
+            activeCat: '',
+            lastQuery: '',
+            currentPrompt: {},
+            promptCount: parseInt(localStorage.getItem('art_prompt_count') || '0'),
+            favs: JSON.parse(localStorage.getItem('art_favs') || '[]'),
+            logs: JSON.parse(localStorage.getItem('art_logs') || '[]'),
+
+            matrix: {
+                retratos: {
+                    s: ["Anciano/a sabio/a con arrugas profundas", "Niño/a curioso/a de ojos brillantes", "Modelo albino/a etéreo/a", "Joven pecoso/a con constelaciones", "Persona con vitíligo artístico", "Guerrero/a con cicatrices de batalla", "Sacerdote/isa zen en paz", "Punk con piercings y mohawk", "Nómada del desierto curtido", "Bailarín/a de ballet", "Cyborg con implantes faciales", "Bruja/o de mirada mística", "Detective noir bajo la lluvia", "Reina exiliada con orgullo", "Hacker con ojeras de neón", "Mimo con maquillaje agrietado", "Astronauta con el casco roto", "Vikingo con barba trenzada", "Chamán con máscara de madera", "Noblesse con peluca empolvada"],
+                    a: ["mirada perdida en la distancia", "sonrisa melancólica", "expresión de asombro genuino", "rostro parcialmente cubierto por sombras", "mirada desafiante directa", "lágrimas silenciosas de cristal", "risa explosiva contagiosa", "ceño fruncido en concentración", "rostro oculto tras una máscara", "perfil clásico iluminado", "cerrando los ojos con paz", "mordiéndose el labio inferior", "gritando al vacío", "susurrando un secreto", "con una mueca de superioridad"],
+                    search: "portrait photography face anatomy",
+                    tip: "Para retratos, enfócate en los ojos; son el centro de la narrativa. Usa sombras suaves para suavizar o duras para dramatismo."
+                },
+                anatomia: {
+                    s: ["Torso con torsión dramática", "Espalda musculosa definida", "Manos entrelazadas complejas", "Piernas en escorzo extremo", "Cuerpo completo dinámico", "Figura en caída libre", "Pose de ataque de esgrima", "Cuerpo arqueado hacia atrás", "Figura acurrucada vulnerable", "Atleta en máxima tensión", "Brazos estirados hacia el sol", "Cuerpo sentado en ángulo de 90°", "Pose de yoga compleja", "Figura apoyada en una rodilla", "Cuerpo saltando un obstáculo"],
+                    a: ["en torsión extrema 180°", "en pose de contrapposto", "saltando en el aire", "en posición fetal", "en equilibrio precario", "flotando en gravedad cero", "corriendo a máxima velocidad", "levantándose del suelo", "en guardia de combate", "estiramiento muscular máximo", "en rotación de eje vertical", "deslizándose por el suelo", "con los músculos contraídos", "en posición de descanso tenso", "ejecutando una patada alta"],
+                    search: "figure drawing anatomy poses",
+                    tip: "En anatomía, simplifica el cuerpo en cajas y cilindros antes de detallar. El escorzo requiere exagerar los tamaños cercanos."
+                },
+                personajes: {
+                    s: ["Cazador/a de recompensas", "Pícaro/a callejero/a", "Samurái ronin sin amo", "Chamán tecnológico/a", "Pirata cósmico/a", "Caballero de armadura derretida", "Nigromante de huesos", "Explorador/a de junglas", "Asesino/a de sombras", "Ingeniero/a de mechas", "Vampiro/a aristócrata", "Bardo/a de taberna", "Monje/a de fuego", "Espía de la era victoriana", "Piloto de naves oxidadas", "Segador de almas cansado", "Paladín de luz oscura", "Mago de cartas cuánticas"],
+                    a: ["estilo Techwear minimalista", "estilo Fantasía Oscura", "estilo Cyberpunk neon", "estilo Post-Apocalíptico", "estilo Steampunk", "estilo Diéselpunk industrial", "estilo Realeza Barroca", "estilo Nómada Tribal", "estilo Uniforme Militar", "estilo Mágico Elemental", "estilo Gótico victoriano", "estilo Nomad-land", "estilo Alta Costura futurista", "estilo armadura de cuero orgánica", "estilo monje del espacio"],
+                    search: "character design concept art",
+                    tip: "El diseño de personajes debe contar una historia a través de su silueta. Asegúrate de que sus accesorios reflejen su mundo."
+                },
+                fondos: {
+                    s: ["Biblioteca antigua infinita", "Callejón cyberpunk lluvioso", "Bosque encantado neblinoso", "Cueva bioluminiscente", "Templo sumergido en coral", "Ciudad flotante entre nubes", "Estación de tren abandonada", "Laboratorio de alquimia", "Mercado de especias exótico", "Desierto de cristales rojos", "Castillo en un acantilado", "Interior de una nave espacial", "Jardín zen minimalista", "Cráter de volcán activo", "Ruinas de una metrópolis", "Acantilado de basalto negro", "Portal a otra dimensión", "Pantano de gas púrpura"],
+                    a: ["abandonado con vegetación", "hiper-tecnológico neón", "en ruinas antiguas", "bajo una tormenta eléctrica", "estilo Ghibli acogedor", "sepultado por la arena", "con arquitectura imposible", "sumergido bajo el agua", "congelado en el tiempo", "flotando en el vacío", "iluminado por lava", "en mitad de un eclipse", "cubierto de cristales", "con gravedad alterada", "en una dimensión de espejos"],
+                    search: "environment design scenery",
+                    tip: "Para fondos, la clave es la perspectiva atmosférica: los objetos lejanos tienen menos contraste y colores más fríos."
+                },
+                manga: {
+                    s: ["Protagonista Shonen", "Villano/a Seinen", "Idol futurista kawaii", "Samurái de la era Edo", "Cyborg tipo Ghost in Shell", "Estudiante de academia mágica", "Meca gigante en combate", "Criatura espiritual (Yokai)", "Héroe caído", "Sensei misterioso", "Chica mágica desilusionada", "Piloto de Eva", "Espadachín de tinta", "Demonio de bajo rango"],
+                    a: ["momento antes del ataque", "bajo lluvia intensa", "con aura de energía", "panel de acción speed-lines", "pose icónica de portada", "comiendo ramen relajado", "transformación épica", "gritando con furia", "mirando al horizonte", "en un flash-back borroso", "liberando su poder oculto", "sangrando por la frente", "con una mirada psicópata", "en pleno salto acrobático", "desvaneciéndose en pétalos"],
+                    search: "manga anime drawing reference",
+                    tip: "En el manga, el grosor de la línea (line weight) es vital. Líneas gruesas para el contorno y finas para detalles internos."
+                },
+                colores: ["Azul profundo / Naranja", "Rojo / Amarillo / Azul", "Verde / Cian / Azul", "Monocromo con acento Neón", "Tonos tierra desaturados", "Pasteles Cyber", "Duo-Tone: B&N/Rojo", "Paleta de puesta de sol (Vaporwave)", "Verde Esmeralda / Oro", "Violeta / Lima Eléctrico", "Gris concreto / Amarillo Industrial", "Turquesa / Coral", "Blanco puro / Azul Glaciar", "Negro absoluto / Oro", "Color sangre / Carbón"]
+            },
+
+            init(cat, el) {
+                this.activeCat = cat;
+                document.querySelectorAll('.card-btn').forEach(b => b.classList.remove('active'));
+                if (el) el.classList.add('active');
+                document.getElementById('display').style.display = 'block';
+                this.generate();
+            },
+
+            generate() {
+                if(!this.activeCat) return;
+                let k = this.activeCat.toLowerCase().replace('í', 'i');
+                const m = this.matrix[k];
+                if (!m) return;
+
+                const s = m.s[Math.floor(Math.random() * m.s.length)];
+                const a = m.a[Math.floor(Math.random() * m.a.length)];
+                const c = this.matrix.colores[Math.floor(Math.random() * this.matrix.colores.length)];
+
+                this.currentPrompt = { category: this.activeCat, subject: s, action: a, colors: c };
+
+                document.getElementById('label-cat').innerText = this.activeCat.toUpperCase();
+                document.getElementById('text-main').innerText = `${s} ${a}.`;
+                document.getElementById('text-color').innerText = `🎨 Paleta Sugerida: ${c}`;
+                
+                this.lastQuery = `${s} ${a} ${m.search}`;
+                this.genPalette();
+                this.promptCount++;
+                localStorage.setItem('art_prompt_count', this.promptCount);
+                this.updateBadge();
+                this.checkIfFav();
+                document.getElementById('ai-response').innerText = 'Genera un prompt para recibir consejos...';
+            },
+
+            genPalette() {
+                const p = document.getElementById('palette');
+                p.innerHTML = '';
+                for(let i=0; i<5; i++) {
+                    const col = `hsl(${Math.random()*360}, 70%, 50%)`;
+                    p.innerHTML += `<div class="swatch" style="background:${col}" onclick="core.showToast('Color copiado')"></div>`;
+                }
+            },
+
+            switchTab(tab, el) {
+                document.querySelectorAll('.container').forEach(v => v.style.display = 'none');
+                document.getElementById('view-' + tab).style.display = 'block';
+                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+                el.classList.add('active');
+                if(tab === 'stats') this.renderStats();
+                if(tab === 'journal') this.renderLogs();
+            },
+
+            saveLog() {
+                const title = document.getElementById('log-title').value || "Dibujo sin título";
+                const fileInput = document.getElementById('log-file');
+                const file = fileInput.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const newLog = { title: title, img: e.target.result, date: new Date().toLocaleString() };
+                        this.logs.unshift(newLog);
+                        localStorage.setItem('art_logs', JSON.stringify(this.logs));
+                        document.getElementById('log-title').value = "";
+                        fileInput.value = "";
+                        this.renderLogs();
+                        this.showToast("¡Dibujo guardado!");
+                    };
+                    reader.readAsDataURL(file);
+                }
+            },
+
+            renderLogs() {
+                const container = document.getElementById('journal-content');
+                if(this.logs.length === 0) {
+                    container.innerHTML = '<p style="text-align:center; color:#555; padding:20px;">No has subido dibujos aún.</p>';
+                    return;
+                }
+                container.innerHTML = this.logs.map((log, idx) => `
+                    <div class="log-entry">
+                        <div style="display:flex; justify-content:space-between; align-items:center">
+                            <h4 style="font-size:0.9rem">${log.title}</h4>
+                            <button onclick="core.deleteLog(${idx})" style="background:none; border:none; cursor:pointer">🗑️</button>
+                        </div>
+                        <span class="log-date">${log.date}</span>
+                        <img src="${log.img}" class="log-img">
+                    </div>
+                `).join('');
+            },
+
+            deleteLog(idx) {
+                this.logs.splice(idx, 1);
+                localStorage.setItem('art_logs', JSON.stringify(this.logs));
+                this.renderLogs();
+            },
+
+            toggleFav() {
+                const index = this.favs.findIndex(f => f.subject === this.currentPrompt.subject && f.action === this.currentPrompt.action);
+                if(index > -1) {
+                    this.favs.splice(index, 1);
+                    this.showToast('Eliminado de favoritos');
+                } else {
+                    this.favs.push({...this.currentPrompt});
+                    this.showToast('¡Añadido! ❤️');
+                }
+                localStorage.setItem('art_favs', JSON.stringify(this.favs));
+                this.checkIfFav();
+                this.updateBadge();
+            },
+
+            checkIfFav() {
+                const isFav = this.favs.some(f => f.subject === this.currentPrompt.subject && f.action === this.currentPrompt.action);
+                const btn = document.getElementById('fav-btn');
+                btn.innerText = isFav ? '❤️' : '🤍';
+            },
+
+            renderStats() {
+                document.getElementById('stat-prompts').innerText = this.promptCount;
+                document.getElementById('stat-favs').innerText = this.favs.length;
+                const list = document.getElementById('favs-list');
+                if(this.favs.length === 0) {
+                    list.innerHTML = '<p style="text-align:center; color:#555; padding:20px;">Sin favoritos.</p>';
+                    return;
+                }
+                list.innerHTML = this.favs.map((f, idx) => `
+                    <div class="stat-card">
+                        <div style="display:flex; justify-content:space-between;">
+                            <span class="tag">${f.category}</span>
+                            <button onclick="core.deleteFav(${idx})" style="background:none; border:none; cursor:pointer;">🗑️</button>
+                        </div>
+                        <p style="font-size:0.85rem; margin-top:5px;">${f.subject} ${f.action}</p>
+                    </div>
+                `).join('');
+            },
+
+            deleteFav(idx) {
+                this.favs.splice(idx, 1);
+                localStorage.setItem('art_favs', JSON.stringify(this.favs));
+                this.renderStats();
+                this.updateBadge();
+            },
+
+            updateBadge() {
+                document.getElementById('total-badge').innerText = this.favs.length;
+            },
+
+            sharePrompt() {
+                const main = document.getElementById('text-main').innerText;
+                const color = document.getElementById('text-color').innerText;
+                const fullText = `🎨 ART ENGINE:\n\n${main}\n${color}`;
+                if (navigator.share && /Android|iPhone|iPad/i.test(navigator.userAgent)) {
+                    navigator.share({ title: 'Prompt', text: fullText }).catch(() => this.fallbackCopyText(fullText));
+                } else {
+                    this.fallbackCopyText(fullText);
+                }
+            },
+
+            fallbackCopyText(text) {
+                const textArea = document.createElement("textarea");
+                textArea.value = text;
+                textArea.style.position = "fixed"; textArea.style.left = "-9999px";
+                document.body.appendChild(textArea);
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    this.showToast('¡Copiado! 📋');
+                } catch (err) {
+                    alert("Error al copiar");
+                }
+                document.body.removeChild(textArea);
+            },
+
+            showToast(msg) {
+                const t = document.getElementById('toast');
+                t.innerText = msg;
+                t.style.display = 'block';
+                setTimeout(() => t.style.display = 'none', 2000);
+            },
+
+            toggleTheme() {
+                document.body.classList.toggle('light-mode');
+                document.getElementById('theme-icon').innerText = document.body.classList.contains('light-mode') ? '☀️' : '🌙';
+            },
+
+            getAISuggestion() {
+                const res = document.getElementById('ai-response');
+                if(!this.activeCat) return;
+                res.innerText = "⏳ Analizando temática...";
+                let k = this.activeCat.toLowerCase().replace('í', 'i');
+                const m = this.matrix[k];
+                setTimeout(() => { res.innerText = m.tip; }, 800);
+            },
+
+            pin() {
+                if (!this.lastQuery) return;
+                window.open(`https://www.pinterest.com/search/pins/?q=${encodeURIComponent(this.lastQuery)}`, '_blank');
+            }
+        };
+
+
+        // --- BLOQUE PWA ---
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./sw.js')
+                .then(() => console.log("Service Worker Activo"))
+                .catch(err => console.log("Error SW", err));
+        }
+        
+        // El comando que tenías va aquí:
+        if (typeof core.updateBadge === 'function') core.updateBadge();
+    </script>
+</body>
+</html>

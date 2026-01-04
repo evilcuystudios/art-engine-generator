@@ -1,0 +1,17 @@
+{
+  "name": "Art Engine Generator",
+  "short_name": "ArtEngine",
+  "description": "Generador de ideas para artistas por Evil Cuy Studios",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#bb86fc",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
