@@ -1,21 +1,17 @@
 {
+  "id": "art-engine-evilcuy",
   "name": "Art Engine Generator",
   "short_name": "ArtEngine",
-  "description": "Generador de ideas para artistas",
+  "description": "Generador de ideas y prompts para artistas",
   "start_url": "./index.html",
   "display": "standalone",
+  "orientation": "portrait",
   "background_color": "#0a0a0a",
   "theme_color": "#bb86fc",
   "icons": [
     {
       "src": "icon.png",
       "sizes": "1080x1080",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "icon.png",
-      "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     }
