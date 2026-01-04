@@ -1,5 +1,5 @@
 {
-  "id": "art-engine-evilcuy",
+  "id": "/art-engine-generator/",
   "name": "Art Engine Generator",
   "short_name": "ArtEngine",
   "description": "Generador de ideas y prompts para artistas",
@@ -13,7 +13,16 @@
       "src": "icon.png",
       "sizes": "1080x1080",
       "type": "image/png",
-      "purpose": "any"
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "icon.png",
+      "sizes": "1080x1080",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Pantalla principal de Art Engine"
     }
   ]
 }
