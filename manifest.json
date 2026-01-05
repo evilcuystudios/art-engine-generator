@@ -3,7 +3,7 @@
   "short_name": "ArtEngine",
   "id": "/art-engine-generator/",
   "description": "Generador de ideas para artistas por Evil Cuy Studios",
-  "start_url": "index.html",
+  "start_url": "./index.html",
   "scope": "/art-engine-generator/",
   "display": "standalone",
   "background_color": "#1a1a2e",
@@ -27,6 +27,22 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Vista Móvil"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Vista Escritorio"
     }
   ]
 }
