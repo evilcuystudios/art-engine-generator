@@ -1,21 +1,20 @@
-const CACHE_NAME = 'art-engine-v1';
+const CACHE_NAME = 'art-engine-v2'; // Cambié a v2 para forzar la actualización
 const urlsToCache = [
-  '/art-engine-generator/',
-  '/art-engine-generator/index.html',
-  '/art-engine-generator/style.css',
-  '/art-engine-generator/script.js',
-  '/art-engine-generator/icon-192.png',
-  '/art-engine-generator/icon-512.png'
+  './',
+  'index.html',
+  'manifest.json',
+  'icon-192.png',
+  'icon-512.png'
 ];
 
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
-        console.log('📦 Cacheando archivos...');
+        console.log('📦 Cacheando archivos reales...');
         return cache.addAll(urlsToCache);
       })
-      .catch(err => console.error('❌ Error al cachear:', err))
+      .catch(err => console.error('❌ Error crítico al cachear:', err))
   );
 });
 
@@ -23,15 +22,23 @@ self.addEventListener('fetch', event => {
   event.respondWith(
     caches.match(event.request)
       .then(response => {
-        if (response) {
-          return response;
-        }
-        return fetch(event.request);
+        return response || fetch(event.request);
       })
-      .catch(err => console.error('❌ Error en fetch:', err))
   );
 });
 
 self.addEventListener('activate', event => {
-  console.log('✅ Service Worker activado');
+  // Limpia caches antiguos para evitar conflictos
+  event.waitUntil(
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames.map(cacheName => {
+          if (cacheName !== CACHE_NAME) {
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    })
+  );
+  console.log('✅ Service Worker v2 activado y limpio');
 });
